@@ -1,0 +1,238 @@
+# source: http://localhost:5001/graphql
+# timestamp: Fri Jun 28 2019 13:24:06 GMT+0200 (Central European Summer Time)
+
+type Comment {
+  id: EntityId!
+  text: String!
+  title: String
+  author: User!
+  parentComment: Comment
+  comments: [Comment!]!
+  votes: [Vote!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input CommentCreateInput {
+  text: String!
+  title: String
+  parentComment: CommentNestedInput
+}
+
+input CommentEditInput {
+  id: EntityId!
+  text: String
+  title: String
+  parentComment: CommentNestedInput
+}
+
+input CommentNestedInput {
+  id: EntityId
+  text: String
+  title: String
+  parentComment: CommentNestedInput
+}
+
+input CommentSearchInput {
+  id: EntityId
+  text: String
+  title: String
+  author: ReferenceSearchInput
+  parentComment: ReferenceSearchInput
+}
+
+input CommentSearchOrderInput {
+  id: OrderEnum
+  text: OrderEnum
+  title: OrderEnum
+  author: OrderEnum
+  parentComment: OrderEnum
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+"""ID scalar type"""
+scalar EntityId
+
+type File {
+  id: EntityId!
+  contentBase64: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  url: String!
+  thumbUrl: String!
+}
+
+input FileCreateInput {
+  contentBase64: String!
+}
+
+input FileEditInput {
+  id: EntityId!
+  contentBase64: String
+}
+
+input FileSearchInput {
+  id: EntityId
+  contentBase64: String
+}
+
+input FileSearchOrderInput {
+  id: OrderEnum
+  contentBase64: OrderEnum
+}
+
+type LoginResponse {
+  token: String!
+  user: User!
+}
+
+type Mutation {
+  emailRegister(input: UserCreateInput!): LoginResponse!
+  emailLogin(password: String!, email: String!): LoginResponse!
+  logout: Boolean!
+  createComment(input: CommentCreateInput!): Comment!
+  updateComment(input: CommentEditInput!): Comment!
+  deleteComments(ids: [ID!]!): Boolean!
+  createFile(input: FileCreateInput!): File!
+  updateFile(input: FileEditInput!): File!
+  deleteFiles(ids: [ID!]!): Boolean!
+  createUser(input: UserCreateInput!): User!
+  updateUser(input: UserEditInput!): User!
+  deleteUsers(ids: [ID!]!): Boolean!
+  createVote(input: VoteCreateInput!): Vote!
+  updateVote(input: VoteEditInput!): Vote!
+  deleteVotes(ids: [ID!]!): Boolean!
+}
+
+enum OrderEnum {
+  DESC
+  ASC
+}
+
+type PaginatedCommentResponse {
+  items: [Comment!]!
+  total: Int!
+  hasMore: Boolean!
+  nextPage: Int!
+}
+
+type PaginatedFileResponse {
+  items: [File!]!
+  total: Int!
+  hasMore: Boolean!
+  nextPage: Int!
+}
+
+type PaginatedUserResponse {
+  items: [User!]!
+  total: Int!
+  hasMore: Boolean!
+  nextPage: Int!
+}
+
+type PaginatedVoteResponse {
+  items: [Vote!]!
+  total: Int!
+  hasMore: Boolean!
+  nextPage: Int!
+}
+
+type Query {
+  comment(id: EntityId!): Comment!
+  searchComments(order: [CommentSearchOrderInput!], take: Int, skip: Int, search: CommentSearchInput): PaginatedCommentResponse!
+  comments: [Comment!]!
+  file(id: EntityId!): File!
+  searchFiles(order: [FileSearchOrderInput!], take: Int, skip: Int, search: FileSearchInput): PaginatedFileResponse!
+  files: [File!]!
+  user(id: EntityId!): User!
+  searchUsers(order: [UserSearchOrderInput!], take: Int, skip: Int, search: UserSearchInput): PaginatedUserResponse!
+  users: [User!]!
+  vote(id: EntityId!): Vote!
+  searchVotes(order: [VoteSearchOrderInput!], take: Int, skip: Int, search: VoteSearchInput): PaginatedVoteResponse!
+  votes: [Vote!]!
+}
+
+input ReferenceSearchInput {
+  id: EntityId
+}
+
+type User {
+  id: EntityId!
+  email: String
+  firstName: String!
+  lastName: String!
+  comments: [Comment!]!
+  votes: [Vote!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  fullName: String!
+}
+
+input UserCreateInput {
+  email: String
+  password: String!
+  firstName: String!
+  lastName: String!
+}
+
+input UserEditInput {
+  id: EntityId!
+  email: String
+  password: String
+  firstName: String
+  lastName: String
+}
+
+input UserSearchInput {
+  id: EntityId
+  email: String
+  password: String
+  firstName: String
+  lastName: String
+}
+
+input UserSearchOrderInput {
+  id: OrderEnum
+  email: OrderEnum
+  password: OrderEnum
+  firstName: OrderEnum
+  lastName: OrderEnum
+}
+
+type Vote {
+  id: EntityId!
+  amount: Float!
+  comment: Comment!
+  author: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input VoteCreateInput {
+  amount: Float!
+  comment: CommentNestedInput!
+}
+
+input VoteEditInput {
+  id: EntityId!
+  amount: Float
+  comment: CommentNestedInput
+}
+
+input VoteSearchInput {
+  id: EntityId
+  amount: Float
+  comment: ReferenceSearchInput
+  author: ReferenceSearchInput
+}
+
+input VoteSearchOrderInput {
+  id: OrderEnum
+  amount: OrderEnum
+  comment: OrderEnum
+  author: OrderEnum
+}
